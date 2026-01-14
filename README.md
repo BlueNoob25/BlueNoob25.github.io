@@ -1,4 +1,44 @@
 # The Shield Mod github page!
+
+## Code for the mod (if you are too lazy to go to the official page)
+### World Code
+
+```js
+function tick() {
+  for (let playerId of api.getPlayerIds()) {
+    //These are all the variables used. Change them however you like! :D//
+    let hearts = api.getHealth(playerId);
+    let maxHearts = 99;
+    let heldItem = api.getHeldItem(playerId);
+    let shieldItem = "Pine Door";
+    let shieldProt = 10;
+    
+      //You could change the point the shield activates; if u want it on immediatly when the player's holding, try setting it to an extremely high point like 5000! You could also change how much the shield gives or the item the shield rewrites.//
+
+      if (heldItem && heldItem.name === shieldItem) {
+      if (hearts < maxHearts) {
+        api.setShieldAmount(playerId, shieldProt);
+        api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0.7, meshOffset: [0, 0, 0] },[0.3, 0.3, 0.3], [0, 3.1, 0]);
+    } else {
+            api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0.7, meshOffset: [0, 0, 0] },[0.5, 0.2, 0], [0, 1.5, 0]);
+      }
+    } else {
+          api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0, meshOffset: [0, 0, 0] },[0, 0, 0], [0, 0, 0]);
+    }
+  }
+}
+```
+
+### Code Block code
+
+```js
+api.giveItem(myId, "Pine Door", 1, {
+   customDisplayName: "Simple Shield"
+   //you could change the name of the item and if you assigned the world code for a different item than the Pine Door you have to rewrite the item here too.//
+   }
+)
+```
+
 How the updates work:
 
    Every update here is what I have put into the code since the last version listed. So, if, hypothetically, I were to make the shield real large (which I have not done and I don’t plan to do so) and then update the code to include the larger shield, that would be an update, maybe not on its own, since it wasn’t too big of a change, and then the very next time I worked on the mod I were to add something else, then input the new code, that would (maybe idk) be a separate update listed than the one that made the shield larger.
