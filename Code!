@@ -2,26 +2,95 @@
 ### World Code
 
 ```js
+//These are all the main variables used. Change them however you like! :D//
+var shieldItem = "Pine Door";
+var minHearts = 100;
+var effectName = "critical_hit";
+var shieldProt = 15;
+var knockbackResLvl = 15;
+
+// Shield function and node attachments
 function tick() {
   for (let playerId of api.getPlayerIds()) {
-    //These are all the variables used. Change them however you like! :D//
     let hearts = api.getHealth(playerId);
-    let maxHearts = 99;
     let heldItem = api.getHeldItem(playerId);
-    let shieldItem = "Pine Door";
-    let shieldProt = 10;
     
-      //You could change the point the shield activates; if u want it on immediatly when the player's holding, try setting it to an extremely high point like 5000! You could also change how much the shield gives or the item the shield rewrites.//
-
+      if (api.getHealth(playerId)) {
       if (heldItem && heldItem.name === shieldItem) {
-      if (hearts < maxHearts) {
+      if (hearts < minHearts) {
         api.setShieldAmount(playerId, shieldProt);
         api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0.7, meshOffset: [0, 0, 0] },[0.3, 0.3, 0.3], [0, 3.1, 0]);
     } else {
             api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0.7, meshOffset: [0, 0, 0] },[0.5, 0.2, 0], [0, 1.5, 0]);
       }
+            api.setShieldAmount(playerId, 0);
     } else {
           api.updateEntityNodeMeshAttachment(playerId, "TorsoNode", "BloxdBlock",{ blockName: shieldItem, size: 0, meshOffset: [0, 0, 0] },[0, 0, 0], [0, 0, 0]);
+      }
+    }
+  }
+}
+
+// Particle effect settings
+function particle(x, y, z){
+        y += 1
+        api.playParticleEffect({
+          dir1: [-1, -1, -1],
+          dir2: [1, 1, 1],
+          pos1: [x, y, z],
+          pos2: [x + 1, y + 1, z + 1],
+          texture: effectName,
+          minLifeTime: 0.2,
+          maxLifeTime: 0.6,
+          minEmitPower: 2,
+          maxEmitPower: 2,
+          minSize: 0.25,
+          maxSize: 0.35,
+          manualEmitCount: 5,
+          gravity: [0, -10, 0],
+          colorGradients: [
+           {
+               timeFraction: 0,
+               minColor: [60, 60, 150, 1],
+               maxColor: [200, 200, 255, 1],
+           },
+          ],
+          velocityGradients: [
+           {
+               timeFraction: 0,
+               factor: 1,
+               factor2: 1,
+           },
+          ],
+          blendMode: 1,
+})
+}
+
+// Effects code
+onPlayerDamagingOtherPlayer = (attacker, victim, dmg, weaponName) => {
+
+    let hearts = api.getHealth(victim);
+    let heldItem = api.getHeldItem(victim);
+
+      if (heldItem && heldItem.name === shieldItem) {
+      if (hearts < minHearts + 1) {
+        api.applyEffect(victim, "Slowness", 100, {inbuiltLevel:knockbackResLvl})
+        let [x, y, z] = api.getPosition(victim);
+        particle(x, y, z);
+    }
+  }
+}
+
+onMobDamagingPlayer = (attacker, victim, dmg, weaponName) => {
+
+    let hearts = api.getHealth(victim);
+    let heldItem = api.getHeldItem(victim);
+
+      if (heldItem && heldItem.name === shieldItem) {
+      if (hearts < minHearts + 1) {
+        api.applyEffect(victim, "Slowness", 100, {inbuiltLevel:knockbackResLvl})
+        let [x, y, z] = api.getPosition(victim);
+        particle(x, y, z);
     }
   }
 }
@@ -30,9 +99,8 @@ function tick() {
 ### Code Block code
 
 ```js
-api.giveItem(myId, "Pine Door", 1, {
-   customDisplayName: "Simple Shield"
-   //you could change the name of the item and if you assigned the world code for a different item than the Pine Door you have to rewrite the item here too.//
+api.giveItem(myId, shieldItem, 1, {
+   customDisplayName: "Simple Shield", customDescription: "Hold me to protect yourself :D"
    }
 )
 ```
