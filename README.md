@@ -140,3 +140,32 @@ It should be CC by 4.0 or similar licenses.
 By using the mod, you agree to the licensing information and understand we have the ability to  report you on bloxdhub.com if found using the mod without credit.
 
 
+
+# Breakdown
+Understanding the mod can allow one to mold the mod into whatever they wish!
+
+## Setting the variables
+```
+var shieldItem = "Pine Door";
+var minHearts = 100;
+var effectName = "critical_hit";
+var shieldProt = 15;
+var knockbackResLvl = 15;
+```
+These variables control the main parts of the shield. Like the code offers, you may change them to however you like!
+These variables are very straightfoward, and they are there for convenience. They were added back in v1.2 to avoid confusion and make customizing the mod much less time-wasting.
+
+For example:
+
+Change the shield to absorb 55 hp and activate when hp is below 30:
+```
+var minHearts = 30;
+---
+var shieldProt = 55;
+```
+Change the shield to become a maple door and let the attack particles become bubble particles:
+```
+var shieldItem = "Maple Door";
+---
+var effectName = "bubble";
+```
